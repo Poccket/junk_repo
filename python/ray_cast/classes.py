@@ -16,6 +16,13 @@ class Vector:
 	def dist(self, v2):
 		return sqrt((v2.x - self.x)**2 + (v2.y - self.y)**2)
 
+	def add(self, vec):
+		self.x += vec.x
+		self.y += vec.y
+
+#	def setMag(self, mag):
+#		self.x = x * 
+
 
 class Boundary:
 	def __init__(self, posA: Vector, posB: Vector):
@@ -29,6 +36,9 @@ class Ray:
 	def __init__(self, pos: Vector, dir: float):
 		self.pos = pos
 		self.dir = Vector(cos(dir), sin(dir))
+
+	def setAngle(self, a):
+		self.dir = Vector(cos(a), sin(a))
 
 	def look(self, x, y):
 		self.dir.x = x - self.pos.x
@@ -66,18 +76,33 @@ class Ray:
 			return
 
 class Particle:
-	def __init__(self, pos: Vector=Vector(250,250), rays: int=36):
+	def __init__(self, pos: Vector=Vector(250,250), fov: int=90):
 		self.pos = pos
 		self.rays = []
-		for x in range(0, rays):
-			self.rays.append(Ray(self.pos, radians(x*360/rays)))
+		self.fov = fov
+		self.heading = 0
+		for x in range(0-(int(fov/2)), int(fov/2)):
+			self.rays.append(Ray(self.pos, radians(x)))
+		self.rotate(0)
+
+	def move(self, amt):
+		vel = Vector(cos(self.heading), sin(self.heading))
+		self.pos.add(vel)
 
 	def update(self,x,y):
 		self.pos = Vector(x,y)
 		for ray in self.rays:
 			ray.pos = self.pos
 
+	def rotate(self,angle):
+		self.heading += angle
+		index = 0
+		for i in range(0-(int(len(self.rays)/2)), int(len(self.rays)/2)):
+			self.rays[index].setAngle(radians(i) + self.heading)
+			index += 1
+
 	def look(self, win, walls):
+		scene = []
 		for ray in self.rays:
 			closest = None
 			record = float("inf")
@@ -90,6 +115,8 @@ class Particle:
 						closest = pt
 			if closest:
 				pg.draw.line(win, (255,255,255), [self.pos.x, self.pos.y], closest, 1)
+			scene.append(record)
+		return scene
 
 	def draw(self, win, color=(255,255,255), stroke:int=0):
 		pg.draw.ellipse(win, color, [self.pos.x-8,self.pos.y-8,16,16], stroke)
