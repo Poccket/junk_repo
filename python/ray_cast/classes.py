@@ -106,13 +106,13 @@ class Particle:
 		scene = []
 		for ray in self.rays:
 			closest = None
-			record = float("inf")
+			record = [float("inf")]
 			for wall in walls:
 				pt = ray.cast(wall)
 				if pt:
 					d = self.pos.dist(Vector(pt[0], pt[1]))
-					if d < record:
-						record = d
+					if d < record[0]:
+						record = [d, wall.col]
 						closest = pt
 			if closest:
 				pg.draw.line(win, (255,255,255), [self.pos.x, self.pos.y], closest, 1)
