@@ -37,14 +37,14 @@ while is_running:
 
 	# Outer Walls
 	walls.append(cl.Boundary(cl.Vector(0, 0), cl.Vector(0,height)))
-	walls.append(cl.Boundary(cl.Vector(0, height), cl.Vector(width,height)))
+	walls.append(cl.Boundary(cl.Vector(0, height), cl.Vector(width,height), (200,200,200)))
 	walls.append(cl.Boundary(cl.Vector(width, height), cl.Vector(width,0)))
-	walls.append(cl.Boundary(cl.Vector(width, 0), cl.Vector(0,0)))
+	walls.append(cl.Boundary(cl.Vector(width, 0), cl.Vector(0,0), (200,200,200)))
 
 	# Cube In Upper Left Corner
-	walls.append(cl.Boundary(cl.Vector(25,25), cl.Vector(25,75)))
-	walls.append(cl.Boundary(cl.Vector(25,75), cl.Vector(75,75)))
-	walls.append(cl.Boundary(cl.Vector(75,75), cl.Vector(75,25)))
+	walls.append(cl.Boundary(cl.Vector(25,25), cl.Vector(25,75), (255,0,0)))
+	walls.append(cl.Boundary(cl.Vector(25,75), cl.Vector(75,75), (0,255,0)))
+	walls.append(cl.Boundary(cl.Vector(75,75), cl.Vector(75,25), (0,0,255)))
 	walls.append(cl.Boundary(cl.Vector(75,25), cl.Vector(25,25)))
 
 	# Cube In Lower Right Corner
@@ -54,11 +54,11 @@ while is_running:
 	walls.append(cl.Boundary(cl.Vector(375,325), cl.Vector(325,325)))
 
 	# Hexagon In Center
-	walls.append(cl.Boundary(cl.Vector(200,175), cl.Vector(175, 200)))
-	walls.append(cl.Boundary(cl.Vector(200,175), cl.Vector(225, 200)))
-	walls.append(cl.Boundary(cl.Vector(175,200), cl.Vector(185,225)))
-	walls.append(cl.Boundary(cl.Vector(225,200), cl.Vector(215,225)))
-	walls.append(cl.Boundary(cl.Vector(215,225), cl.Vector(185,225)))
+	walls.append(cl.Boundary(cl.Vector(200,175), cl.Vector(175, 200), (40,186,231)))
+	walls.append(cl.Boundary(cl.Vector(200,175), cl.Vector(225, 200), (40,186,231)))
+	walls.append(cl.Boundary(cl.Vector(175,200), cl.Vector(185,225), (40,186,231)))
+	walls.append(cl.Boundary(cl.Vector(225,200), cl.Vector(215,225), (40,186,231)))
+	walls.append(cl.Boundary(cl.Vector(215,225), cl.Vector(185,225), (40,186,231)))
 
 	p_fov = 60
 	cam = cl.Particle(fov=p_fov)
@@ -97,21 +97,20 @@ while is_running:
 
 		w = width2 / p_fov
 		for i in range(0, len(scene)):
-			if scene[i] > height:
-				scene[i] = height
-			sq = scene[i]**2
+			if scene[i][0] > height:
+				scene[i][0] = height
+			sq = scene[i][0]**2
 			wsq = width**2
-			b = map(sq, 0, wsq, height, 0)
+			col_r = map(sq, 0, wsq, scene[i][1][0], 0)
+			col_g = map(sq, 0, wsq, scene[i][1][1], 0)
+			col_b = map(sq, 0, wsq, scene[i][1][2], 0)
 			#h = map(scene[i], 0, width2, height, 0)
-			h = height * p_fov / scene[i]
-			col = b*0.63
-			if col > 255:
-				col = 255
+			h = height * p_fov / scene[i][0]
 			to_draw = pg.Rect(0, 0, w+1, h)
 			#to_draw = pg.Rect(i*w+w/2, height/2, w+1, 10*200/scene[i])
 			#to_draw = pg.Rect(0, 0, w+1, 10*200/scene[i])
 			to_draw.center = ((i*w)+width, height/2)
-			pg.draw.rect(window, (col,col,col), to_draw)
+			pg.draw.rect(window, (col_r,col_g,col_b), to_draw)
 
 		pg.display.flip()
 
