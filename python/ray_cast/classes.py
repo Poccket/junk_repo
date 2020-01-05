@@ -25,7 +25,7 @@ class Vector:
 
 
 class Boundary:
-	def __init__(self, posA: Vector, posB: Vector):
+	def __init__(self, posA: Vector, posB: Vector, col=(255,255,255)):
 		self.a = posA
 		self.b = posB
 
