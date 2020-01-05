@@ -28,6 +28,7 @@ class Boundary:
 	def __init__(self, posA: Vector, posB: Vector, col=(255,255,255)):
 		self.a = posA
 		self.b = posB
+		self.col = col
 
 	def draw(self, win, color=(255,255,255), stroke:int=1):
 		pg.draw.line(win, color, [self.a.x, self.a.y], [self.b.x, self.b.y], stroke)
