@@ -16,9 +16,9 @@ def map(x,a,b,c,d):
 	return (x-a)/(b-a)*(d-c)+c
 
 is_running = True
-width = 400
-width2 = 400
-height = 400
+width = 800
+width2 = 800
+height = 800
 window = pg.display.set_mode((width+width2,height))
 pg.display.set_caption("Display Window")
 clock = pg.time.Clock()
@@ -48,17 +48,18 @@ while is_running:
 	walls.append(cl.Boundary(cl.Vector(75,25), cl.Vector(25,25)))
 
 	# Cube In Lower Right Corner
-	walls.append(cl.Boundary(cl.Vector(325,325), cl.Vector(325,375)))
-	walls.append(cl.Boundary(cl.Vector(325,375), cl.Vector(375,375)))
-	walls.append(cl.Boundary(cl.Vector(375,375), cl.Vector(375,325)))
-	walls.append(cl.Boundary(cl.Vector(375,325), cl.Vector(325,325)))
+	walls.append(cl.Boundary(cl.Vector(725,725), cl.Vector(725,775)))
+	walls.append(cl.Boundary(cl.Vector(725,775), cl.Vector(775,775)))
+	walls.append(cl.Boundary(cl.Vector(775,775), cl.Vector(775,725)))
+	walls.append(cl.Boundary(cl.Vector(775,725), cl.Vector(725,725)))
 
 	# Hexagon In Center
-	walls.append(cl.Boundary(cl.Vector(200,175), cl.Vector(175, 200), (40,186,231)))
-	walls.append(cl.Boundary(cl.Vector(200,175), cl.Vector(225, 200), (40,186,231)))
-	walls.append(cl.Boundary(cl.Vector(175,200), cl.Vector(185,225), (40,186,231)))
-	walls.append(cl.Boundary(cl.Vector(225,200), cl.Vector(215,225), (40,186,231)))
-	walls.append(cl.Boundary(cl.Vector(215,225), cl.Vector(185,225), (40,186,231)))
+	walls.append(cl.Boundary(cl.Vector(400,290), cl.Vector(495,345), (255,0,0)))
+	walls.append(cl.Boundary(cl.Vector(495,345), cl.Vector(495,455), (255,255,0)))
+	walls.append(cl.Boundary(cl.Vector(495,455), cl.Vector(400,510), (0,255,0)))
+	walls.append(cl.Boundary(cl.Vector(400,510), cl.Vector(305,455), (0,255,255)))
+	walls.append(cl.Boundary(cl.Vector(305,455), cl.Vector(305,345), (0,0,255)))
+	walls.append(cl.Boundary(cl.Vector(305,345), cl.Vector(400,290), (255,0,255)))
 
 	p_fov = 60
 	cam = cl.Particle(fov=p_fov)
