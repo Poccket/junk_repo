@@ -17,7 +17,7 @@ def map(x,a,b,c,d):
 
 is_running = True
 width = 800
-width2 = 800
+width2 = 1000
 height = 800
 window = pg.display.set_mode((width+width2,height))
 pg.display.set_caption("Display Window")
@@ -61,8 +61,22 @@ while is_running:
 	walls.append(cl.Boundary(cl.Vector(305,455), cl.Vector(305,345), (0,0,255)))
 	walls.append(cl.Boundary(cl.Vector(305,345), cl.Vector(400,290), (255,0,255)))
 
-	p_fov = 60
-	cam = cl.Particle(fov=p_fov)
+	# ??? somethin
+
+	walls.append(cl.Boundary(cl.Vector(600, 75), cl.Vector(700, 175), (188,60,33)))
+	walls.append(cl.Boundary(cl.Vector(600, 75), cl.Vector(610, 65), (188,60,33)))
+	walls.append(cl.Boundary(cl.Vector(700, 175), cl.Vector(710, 165), (188,60,33)))
+	walls.append(cl.Boundary(cl.Vector(710, 165), cl.Vector(610, 65), (188,60,33)))
+
+	cam = cl.Particle(fov=70, res=4)
+
+	w = width2 / (cam.fov*cam.res)
+	tbuih = height*cam.fov
+	wsq = width**2
+	half = height/2
+	bounce = 0
+	b_change = 2
+	b_limit = 10
 
 	while is_active:
 		for event in pg.event.get():
@@ -72,22 +86,36 @@ while is_running:
 				print("Goodbye!")
 			elif event.type == pg.KEYDOWN and event.key == pg.K_RETURN:
 				is_active = False
+			elif event.type == pg.KEYUP and event.key in [pg.K_UP, pg.K_RIGHT, pg.K_LEFT, pg.K_DOWN]:
+				bounce = 0
 		keys = pg.key.get_pressed()
 		if keys[pg.K_LEFT]:
 			cam.rotate(-0.05)
+			if bounce == b_limit or bounce == b_limit*-1:
+				b_change *= -1
+			bounce += b_change
 		if keys[pg.K_RIGHT]:
 			cam.rotate(0.05)
+			if bounce == b_limit or bounce == b_limit*-1:
+				b_change *= -1
+			bounce += b_change
 		if keys[pg.K_UP]:
-			cam.move(2)
+			cam.move(2, walls)
+			if bounce == b_limit or bounce == b_limit*-1:
+				b_change *= -1
+			bounce += b_change
 		if keys[pg.K_DOWN]:
-			cam.move(-2)
+			cam.move(-2, walls)
+			if bounce == b_limit or bounce == b_limit*-1:
+				b_change *= -1
+			bounce += b_change
 		
 		window.fill(colors[0])
 
 		for wall in walls:
 			wall.draw(window)
 
-		pg.draw.rect(window, (50,50,50), (width, height/2, width*2, height))
+		pg.draw.rect(window, (50,50,50), (width, (height/2)-bounce, width*2, height))
 
 		mouse_x, mouse_y = pg.mouse.get_pos()
 		if mouse_x > width:
@@ -95,22 +123,20 @@ while is_running:
 		#cam.update(mouse_x,mouse_y)
 		cam.draw(window)
 		scene = cam.look(window, walls)
-
-		w = width2 / p_fov
 		for i in range(0, len(scene)):
 			if scene[i][0] > height:
 				scene[i][0] = height
 			sq = scene[i][0]**2
-			wsq = width**2
 			col_r = map(sq, 0, wsq, scene[i][1][0], 0)
 			col_g = map(sq, 0, wsq, scene[i][1][1], 0)
 			col_b = map(sq, 0, wsq, scene[i][1][2], 0)
-			#h = map(scene[i], 0, width2, height, 0)
-			h = height * p_fov / scene[i][0]
+			#h = map(scene[i][0], 0, width2, height, 0)
+			h = tbuih / scene[i][0]
+			#h = 1 / scene[i][0]
 			to_draw = pg.Rect(0, 0, w+1, h)
-			#to_draw = pg.Rect(i*w+w/2, height/2, w+1, 10*200/scene[i])
-			#to_draw = pg.Rect(0, 0, w+1, 10*200/scene[i])
-			to_draw.center = ((i*w)+width, height/2)
+			#to_draw = pg.Rect(i*w+w/2, height/2, w+1, 10*height/scene[i][0])
+			#to_draw = pg.Rect(0, 0, w+1, 10*height/scene[i][0])
+			to_draw.center = ((i*w)+width, half-bounce)
 			pg.draw.rect(window, (col_r,col_g,col_b), to_draw)
 
 		pg.display.flip()
