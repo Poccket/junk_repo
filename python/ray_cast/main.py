@@ -110,6 +110,17 @@ while is_running:
 				b_change *= -1
 			bounce += b_change
 		
+		if cam.pos.x >= width:
+			cam.pos.x = width-10
+		if cam.pos.x <= 0:
+			cam.pos.x = 10
+
+		if cam.pos.y >= height:
+			cam.pos.y = height-10
+		if cam.pos.y <= 0:
+			cam.pos.y = 10
+
+
 		window.fill(colors[0])
 
 		for wall in walls:
