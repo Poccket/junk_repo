@@ -4,7 +4,14 @@ import pygame as pg
 from copy import deepcopy
 from sys import float_info
 
-width = 1000
+def get_int(text):
+	while True:
+		try:
+			return int(input(text))
+		except ValueError:
+			print("Not a number!")
+
+width = get_int("Enter screen width: ")
 
 def colltest(a,b,c):
 	crossproduct = (c.y - a.y) * (b.x - a.x) - (c.x - a.x) * (b.y - a.y)

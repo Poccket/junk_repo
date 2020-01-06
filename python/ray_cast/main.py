@@ -15,11 +15,13 @@ colors = [
 def map(x,a,b,c,d):
 	return (x-a)/(b-a)*(d-c)+c
 
+height = cl.get_int("Enter screen height: ")
+fovinp = cl.get_int("Enter FOV: ")
 is_running = True
 width = 0
 mapw = 800
 width2 = cl.width
-height = 800
+maph = 800
 window = pg.display.set_mode((width+width2,height+20))
 pg.display.set_caption("Display Window")
 clock = pg.time.Clock()
@@ -33,17 +35,11 @@ show_map = False
 while is_running:
 	is_active = True
 	walls = []
-#	for w in range(0,5):
-#		x1 = randint(5,width-5)
-#		y1 = randint(5,height-5)
-#		x2 = randint(5,width-5)
-#		y2 = randint(5,height-5)
-#		walls.append(cl.Boundary(cl.Vector(x1,y1), cl.Vector(x2,y2)))
 
 	# Outer Walls
-	walls.append(cl.Boundary(cl.Vector(0, 0), cl.Vector(0,height)))
-	walls.append(cl.Boundary(cl.Vector(0, height), cl.Vector(mapw,height), (200,200,200)))
-	walls.append(cl.Boundary(cl.Vector(mapw, height), cl.Vector(mapw,0)))
+	walls.append(cl.Boundary(cl.Vector(0, 0), cl.Vector(0,maph)))
+	walls.append(cl.Boundary(cl.Vector(0, maph), cl.Vector(mapw,maph), (200,200,200)))
+	walls.append(cl.Boundary(cl.Vector(mapw, maph), cl.Vector(mapw,0)))
 	walls.append(cl.Boundary(cl.Vector(mapw, 0), cl.Vector(0,0), (200,200,200)))
 
 	# Cube In Upper Left Corner
@@ -84,7 +80,7 @@ while is_running:
 	walls.append(cl.Boundary(cl.Vector(700, 175), cl.Vector(710, 165), (188,60,33)))
 	walls.append(cl.Boundary(cl.Vector(710, 165), cl.Vector(610, 65), (188,60,33)))
 
-	cam = cl.Particle(fov=70, res=2)
+	cam = cl.Particle(fov=fovinp, res=2)
 
 	w = width2 / (cam.fov*cam.res)
 	tbuih = height*cam.fov
@@ -164,8 +160,8 @@ while is_running:
 		if cam.pos.x <= 0:
 			cam.pos.x = movement_speed
 
-		if cam.pos.y >= height:
-			cam.pos.y = height-movement_speed
+		if cam.pos.y >= maph:
+			cam.pos.y = maph-movement_speed
 		if cam.pos.y <= 0:
 			cam.pos.y = movement_speed
 
@@ -185,6 +181,11 @@ while is_running:
 			h = tbuih / scene[i][0]
 			to_draw = pg.Rect(0, 0, w+1, h)
 			to_draw.center = ((i*w), half-bounce)
+			
+			col_r = col_r if col_r > 0 else 0
+			col_g = col_g if col_g > 0 else 0
+			col_b = col_b if col_b > 0 else 0
+
 			pg.draw.rect(window, (col_r,col_g,col_b), to_draw)
 
 		if show_map:
