@@ -18,7 +18,7 @@ def map(x,a,b,c,d):
 is_running = True
 width = 0
 mapw = 800
-width2 = 1000
+width2 = cl.width
 height = 800
 window = pg.display.set_mode((width+width2,height+20))
 pg.display.set_caption("Display Window")
@@ -171,15 +171,7 @@ while is_running:
 
 
 		window.fill(colors[0])
-
-		if show_map:
-			for wall in walls:
-				wall.draw(window)
-
-		pg.draw.rect(window, (50,50,50), (width, (height/2)-bounce, width2, height))
-
-		if show_map:
-			cam.draw(window)
+		pg.draw.rect(window, (50,50,50), (0, (height/2)-bounce, width2, height))
 		scene = cam.look(window, walls, show_map)
 
 		# First Person View
@@ -192,8 +184,13 @@ while is_running:
 			col_b = map(sq, 0, wsq, scene[i][1][2], 0)
 			h = tbuih / scene[i][0]
 			to_draw = pg.Rect(0, 0, w+1, h)
-			to_draw.center = ((i*w)+width, half-bounce)
+			to_draw.center = ((i*w), half-bounce)
 			pg.draw.rect(window, (col_r,col_g,col_b), to_draw)
+
+		if show_map:
+			cam.draw(window)
+			for wall in walls:
+				wall.draw(window)
 
 		# Pause Menu
 		if paused:

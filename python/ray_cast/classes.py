@@ -4,6 +4,8 @@ import pygame as pg
 from copy import deepcopy
 from sys import float_info
 
+width = 1000
+
 def colltest(a,b,c):
 	crossproduct = (c.y - a.y) * (b.x - a.x) - (c.x - a.x) * (b.y - a.y)
 	# compare versus epsilon for floating point values, or != 0 if using integers
@@ -54,7 +56,7 @@ class Boundary:
 		self.col = col
 
 	def draw(self, win, stroke:int=1):
-		pg.draw.line(win, self.col, [self.a.x, self.a.y], [self.b.x, self.b.y], stroke)
+		pg.draw.line(win, self.col, [self.a.x+width, self.a.y], [self.b.x+width, self.b.y], stroke)
 
 class Ray:
 	def __init__(self, pos: Vector, dir: float):
@@ -141,11 +143,11 @@ class Particle:
 						record = [ceil(d), wall.col]
 						closest = pt
 			if closest and do_draw:
-				pg.draw.line(win, (255,255,255), [self.pos.x, self.pos.y], closest, 1)
+				pg.draw.line(win, (255,255,255), [self.pos.x+width, self.pos.y], [closest[0]+width, closest[1]], 1)
 			scene.append(record)
 		return scene
 
 	def draw(self, win, color=(255,255,255), stroke:int=0):
-		pg.draw.ellipse(win, color, [self.pos.x-8,self.pos.y-8,16,16], stroke)
-		for ray in self.rays:
-			ray.draw(win)
+		pg.draw.ellipse(win, color, [self.pos.x-8+width,self.pos.y-8,16,16], stroke)
+		#for ray in self.rays:
+		#	ray.draw(win)
