@@ -128,7 +128,7 @@ class Particle:
 			self.rays[index].setAngle(radians(i/self.res) + self.heading)
 			index += 1
 
-	def look(self, win, walls):
+	def look(self, win, walls, do_draw):
 		scene = []
 		for ray in self.rays:
 			closest = None
@@ -140,7 +140,7 @@ class Particle:
 					if d < record[0]:
 						record = [ceil(d), wall.col]
 						closest = pt
-			if closest:
+			if closest and do_draw:
 				pg.draw.line(win, (255,255,255), [self.pos.x, self.pos.y], closest, 1)
 			scene.append(record)
 		return scene
