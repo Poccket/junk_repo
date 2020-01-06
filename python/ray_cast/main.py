@@ -20,7 +20,7 @@ width = 0
 mapw = 800
 width2 = 1000
 height = 800
-window = pg.display.set_mode((width+width2,height))
+window = pg.display.set_mode((width+width2,height+20))
 pg.display.set_caption("Display Window")
 clock = pg.time.Clock()
 pg.font.init()
@@ -84,7 +84,7 @@ while is_running:
 	walls.append(cl.Boundary(cl.Vector(700, 175), cl.Vector(710, 165), (188,60,33)))
 	walls.append(cl.Boundary(cl.Vector(710, 165), cl.Vector(610, 65), (188,60,33)))
 
-	cam = cl.Particle(fov=70, res=4)
+	cam = cl.Particle(fov=70, res=2)
 
 	w = width2 / (cam.fov*cam.res)
 	tbuih = height*cam.fov
@@ -131,7 +131,7 @@ while is_running:
 						else:
 							width -= mapw*-1
 						show_map = not show_map
-						window = pg.display.set_mode((width+width2,height))
+						window = pg.display.set_mode((width+width2,height+20))
 				elif event.type == pg.KEYUP and event.key in [pg.K_UP, pg.K_RIGHT, pg.K_LEFT, pg.K_DOWN]:
 					bounce = 0
 			# Movement
@@ -199,8 +199,14 @@ while is_running:
 		if paused:
 			pg.draw.rect(window, (0,0,0), ((width+width2)*0.4,height*0.4,350,115))
 			pg.draw.rect(window, (255,255,255), ((width+width2)*0.4,height*0.4,350,115), 1)
-			textsurface = textspace.render('Press Y to quit, or N to cancel.', False, (255,255,255))
-			window.blit(textsurface, (((width+width2)/2)*.86, (height/2)-30))
+			text_quit = textspace.render('Press Y to quit, or N to cancel.', False, (255,255,255))
+			window.blit(text_quit, (((width+width2)/2)*.86, (height/2)-30))
+
+		pg.draw.rect(window, (0,0,0), (0,height,width+width2,20))
+		pg.draw.line(window, (255,255,255), [0,height],[width+width2,height],1)
+
+		text_cont = textspace.render('Press M to open/close map. Press ESC to leave.', False, (255,255,255))
+		window.blit(text_cont, (0, height+2))
 
 		pg.display.flip()
 
