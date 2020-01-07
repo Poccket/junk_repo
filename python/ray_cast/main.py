@@ -22,6 +22,7 @@ mapw = 800
 width2 = cl.width
 maph = 800
 window = pg.display.set_mode((width + width2, height + 20))
+print(type(window))
 pg.display.set_caption("Display Window")
 clock = pg.time.Clock()
 pg.font.init()
@@ -33,74 +34,47 @@ show_map = False
 
 while is_running:
     is_active = True
-    walls = []
+    walls = [
+        # Map boundaries
+        cl.Boundary(cl.Vector(0, 0), cl.Vector(0, maph)),
+        cl.Boundary(cl.Vector(0, maph), cl.Vector(mapw, maph), (200, 200, 200)),
+        cl.Boundary(cl.Vector(mapw, maph), cl.Vector(mapw, 0)),
+        cl.Boundary(cl.Vector(mapw, 0), cl.Vector(0, 0), (200, 200, 200)),
 
-    # Outer Walls
-    walls.append(cl.Boundary(cl.Vector(0, 0), cl.Vector(0, maph)))
-    walls.append(cl.Boundary(cl.Vector(0, maph), cl.Vector(mapw, maph),
-                 (200, 200, 200)))
-    walls.append(cl.Boundary(cl.Vector(mapw, maph), cl.Vector(mapw, 0)))
-    walls.append(cl.Boundary(cl.Vector(mapw, 0), cl.Vector(0, 0),
-                 (200, 200, 200)))
+        # Square in upper left
+        cl.Boundary(cl.Vector(25, 25), cl.Vector(25, 75), (255, 0, 0)),
+        cl.Boundary(cl.Vector(25, 75), cl.Vector(75, 75), (0, 255, 0)),
+        cl.Boundary(cl.Vector(75, 75), cl.Vector(75, 25), (0, 0, 255)),
+        cl.Boundary(cl.Vector(75, 25), cl.Vector(25, 25)),
 
-    # Cube In Upper Left Corner
-    walls.append(cl.Boundary(cl.Vector(25, 25), cl.Vector(25, 75),
-                 (255, 0, 0)))
-    walls.append(cl.Boundary(cl.Vector(25, 75), cl.Vector(75, 75),
-                 (0, 255, 0)))
-    walls.append(cl.Boundary(cl.Vector(75, 75), cl.Vector(75, 25),
-                 (0, 0, 255)))
-    walls.append(cl.Boundary(cl.Vector(75, 25), cl.Vector(25, 25)))
+        # Square in lower right
+        cl.Boundary(cl.Vector(725, 725), cl.Vector(725, 775)),
+        cl.Boundary(cl.Vector(725, 775), cl.Vector(775, 775)),
+        cl.Boundary(cl.Vector(775, 775), cl.Vector(775, 725)),
+        cl.Boundary(cl.Vector(775, 725), cl.Vector(725, 725)),
 
-    # Cube In Lower Right Corner
-    walls.append(cl.Boundary(cl.Vector(725, 725), cl.Vector(725, 775)))
-    walls.append(cl.Boundary(cl.Vector(725, 775), cl.Vector(775, 775)))
-    walls.append(cl.Boundary(cl.Vector(775, 775), cl.Vector(775, 725)))
-    walls.append(cl.Boundary(cl.Vector(775, 725), cl.Vector(725, 725)))
+        # Rainbow Hexagon
+        cl.Boundary(cl.Vector(400, 290), cl.Vector(447, 317), (255, 0, 0)),     # Wall 1
+        cl.Boundary(cl.Vector(447, 317), cl.Vector(495, 345), (255, 255, 0)),
+        cl.Boundary(cl.Vector(495, 345), cl.Vector(495, 400), (0, 255, 0)),     # Wall 2
+        cl.Boundary(cl.Vector(495, 400), cl.Vector(495, 455), (0, 255, 255)),
+        cl.Boundary(cl.Vector(495, 455), cl.Vector(447, 482), (0, 0, 255)),     # Wall 3
+        cl.Boundary(cl.Vector(447, 482), cl.Vector(400, 510), (255, 0, 255)),
+        cl.Boundary(cl.Vector(400, 510), cl.Vector(353, 482), (255, 0, 0)),     # Wall 4
+        cl.Boundary(cl.Vector(353, 482), cl.Vector(305, 455), (255, 255, 0)),
+        cl.Boundary(cl.Vector(305, 455), cl.Vector(305, 400), (0, 255, 0)),     # Wall 5
+        cl.Boundary(cl.Vector(305, 400), cl.Vector(305, 345), (0, 255, 255)),
+        cl.Boundary(cl.Vector(305, 345), cl.Vector(353, 317), (0, 0, 255)),     # Wall 6
+        cl.Boundary(cl.Vector(353, 317), cl.Vector(400, 290), (255, 0, 255)),
 
-    # Hexagon In Center
-    walls.append(cl.Boundary(cl.Vector(400, 290), cl.Vector(447, 317),
-                 (255, 0, 0)))
-    walls.append(cl.Boundary(cl.Vector(447, 317), cl.Vector(495, 345),
-                 (255, 255, 0)))
+        # """Brick""" wall
+        cl.Boundary(cl.Vector(600, 75), cl.Vector(700, 175), (188, 60, 33)),
+        cl.Boundary(cl.Vector(600, 75), cl.Vector(610, 65), (188, 60, 33)),
+        cl.Boundary(cl.Vector(700, 175), cl.Vector(710, 165), (188, 60, 33)),
+        cl.Boundary(cl.Vector(710, 165), cl.Vector(610, 65), (188, 60, 33))
+    ]
 
-    walls.append(cl.Boundary(cl.Vector(495, 345), cl.Vector(495, 400),
-                 (0, 255, 0)))
-    walls.append(cl.Boundary(cl.Vector(495, 400), cl.Vector(495, 455),
-                 (0, 255, 255)))
-
-    walls.append(cl.Boundary(cl.Vector(495, 455), cl.Vector(447, 482),
-                 (0, 0, 255)))
-    walls.append(cl.Boundary(cl.Vector(447, 482), cl.Vector(400, 510),
-                 (255, 0, 255)))
-
-    walls.append(cl.Boundary(cl.Vector(400, 510), cl.Vector(353, 482),
-                 (255, 0, 0)))
-    walls.append(cl.Boundary(cl.Vector(353, 482), cl.Vector(305, 455),
-                 (255, 255, 0)))
-
-    walls.append(cl.Boundary(cl.Vector(305, 455), cl.Vector(305, 400),
-                 (0, 255, 0)))
-    walls.append(cl.Boundary(cl.Vector(305, 400), cl.Vector(305, 345),
-                 (0, 255, 255)))
-
-    walls.append(cl.Boundary(cl.Vector(305, 345), cl.Vector(353, 317),
-                 (0, 0, 255)))
-    walls.append(cl.Boundary(cl.Vector(353, 317), cl.Vector(400, 290),
-                 (255, 0, 255)))
-
-    # ??? somethin
-    walls.append(cl.Boundary(cl.Vector(600, 75), cl.Vector(700, 175),
-                 (188, 60, 33)))
-    walls.append(cl.Boundary(cl.Vector(600, 75), cl.Vector(610, 65),
-                 (188, 60, 33)))
-    walls.append(cl.Boundary(cl.Vector(700, 175), cl.Vector(710, 165),
-                 (188, 60, 33)))
-    walls.append(cl.Boundary(cl.Vector(710, 165), cl.Vector(610, 65),
-                 (188, 60, 33)))
-
-    cam = cl.Particle(fov=fovinp, res=2)
-
+    cam = cl.Particle(pos=cl.Vector(250, 250), fov=fovinp, res=2)
     w = width2 / (cam.fov * cam.res)
     tbuih = height * cam.fov
     wsq = mapw**2
@@ -118,9 +92,9 @@ while is_running:
         if paused:
             for event in pg.event.get():
                 if event.type == pg.QUIT:
-                        is_active = False
-                        is_running = False
-                        print("Goodbye!")
+                    is_active = False
+                    is_running = False
+                    print("Goodbye!")
                 elif event.type == pg.KEYDOWN:
                     if event.key == pg.K_y:
                         is_active = False
@@ -132,9 +106,9 @@ while is_running:
         else:
             for event in pg.event.get():
                 if event.type == pg.QUIT:
-                        is_active = False
-                        is_running = False
-                        print("Goodbye!")
+                    is_active = False
+                    is_running = False
+                    print("Goodbye!")
                 if event.type == pg.KEYDOWN:
                     if event.key == pg.K_RETURN:
                         is_active = False
@@ -166,12 +140,12 @@ while is_running:
                     b_change *= -1
                 bounce += b_change
             if keys[pg.K_UP]:
-                cam.move(movement_speed, walls)
+                cam.move(movement_speed)
                 if bounce == b_limit or bounce == b_limit * -1:
                     b_change *= -1
                 bounce += b_change
             if keys[pg.K_DOWN]:
-                cam.move(-movement_speed * moveb_mult, walls)
+                cam.move(-movement_speed * moveb_mult)
                 if bounce == b_limit or bounce == b_limit * -1:
                     b_change *= -1
                 bounce += b_change
