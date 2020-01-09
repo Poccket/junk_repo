@@ -1,6 +1,7 @@
 from typing import List
 from math import sqrt, radians, cos, sin, ceil
 import pygame as pg
+import helper as hl
 
 
 class Vector:
@@ -58,25 +59,7 @@ class Ray:
         pg.draw.line(win, color, [self.pos.x, self.pos.y], draw_dir, stroke)
 
     def cast(self, wall: Boundary):
-        x1, y1 = wall.a.x, wall.a.y
-        x2, y2 = wall.b.x, wall.b.y
-        x3, y3 = self.pos.x, self.pos.y
-        x4, y4 = self.pos.x + self.ang.x, self.pos.y + self.ang.y
-
-        den = (x1-x2) * (y3-y4) - (y1-y2) * (x3-x4)
-        if not den:
-            return
-
-        t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / den
-        u = -((x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)) / den
-
-        if 0 < t < 1 and u > 0:
-            pt = [0, 0]
-            pt[0] = x1 + t * (x2 - x1)
-            pt[1] = y1 + t * (y2 - y1)
-            return pt
-        else:
-            return
+        return hl.intersect(wall.a, wall.b, self.pos, Vector(self.pos.x + self.ang.x, self.pos.y + self.ang.y))
 
 
 class Particle:
@@ -129,3 +112,4 @@ class Particle:
 
     def draw(self, win, color=(255, 255, 255), stroke: float = 0, offset: float = 0):
         pg.draw.ellipse(win, color, [self.pos.x-8+offset, self.pos.y-8, 16, 16], stroke)
+        pg.draw.rect(win, color, (self.pos.x-4+offset, self.pos.y-4, 8, 8), 1)
