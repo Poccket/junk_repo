@@ -93,10 +93,10 @@ class Boundary:
     :param col: Three colors delineating an RGB color
     :type col: tuple
 
-    :param clip: Whether or not the wall can be clipped through
+    :param clip: Whether or not the wall can be walked through
     :type clip: bool
     """
-    def __init__(self, posa: Vector, posb: Vector, col: tuple = (255, 255, 255), clip: bool = False):
+    def __init__(self, posa: Vector, posb: Vector, col: tuple = (255, 255, 255), clip: bool = True):
         self.a = posa
         self.b = posb
         self.col = col
