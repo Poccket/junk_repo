@@ -1,5 +1,7 @@
 # Ray casting Demo
 
+![Preview image](Preview.png)
+
 Video:
 https://www.youtube.com/watch?v=kDSnwV2GXZU
 
