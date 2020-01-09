@@ -25,13 +25,13 @@ walls = [
     cl.Boundary(cl.Vector(775, 725), cl.Vector(725, 725)),
 
     # Rainbow Hexagon
-    cl.Boundary(cl.Vector(400, 290), cl.Vector(447, 317), (255, 0, 0)),     # Wall 1
+    cl.Boundary(cl.Vector(400, 290), cl.Vector(447, 317), (255, 0, 0), clip=False),     # Wall 1
     cl.Boundary(cl.Vector(447, 317), cl.Vector(495, 345), (255, 255, 0)),
     cl.Boundary(cl.Vector(495, 345), cl.Vector(495, 400), (0, 255, 0)),     # Wall 2
     cl.Boundary(cl.Vector(495, 400), cl.Vector(495, 455), (0, 255, 255)),
     cl.Boundary(cl.Vector(495, 455), cl.Vector(447, 482), (0, 0, 255)),     # Wall 3
     cl.Boundary(cl.Vector(447, 482), cl.Vector(400, 510), (255, 0, 255)),
-    cl.Boundary(cl.Vector(400, 510), cl.Vector(353, 482), (255, 0, 0)),     # Wall 4
+    cl.Boundary(cl.Vector(400, 510), cl.Vector(353, 482), (255, 0, 0), clip=False),     # Wall 4
     cl.Boundary(cl.Vector(353, 482), cl.Vector(305, 455), (255, 255, 0)),
     cl.Boundary(cl.Vector(305, 455), cl.Vector(305, 400), (0, 255, 0)),     # Wall 5
     cl.Boundary(cl.Vector(305, 400), cl.Vector(305, 345), (0, 255, 255)),
