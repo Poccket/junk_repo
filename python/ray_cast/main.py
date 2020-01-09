@@ -18,6 +18,8 @@ parser.add_argument('-r', '--res', help='Amount to multiply raycount by',
                     type=int, default=1)
 parser.add_argument('-m', '--map', help='Map file to import',
                     type=str, default="maps.map_test01")
+parser.add_argument('-n', '--noclip', help='Noclip',
+                    action='store_true')
 parser.add_argument('-v', '--verbose', help='Prints verbose messages',
                     action='store_true')
 parser.add_argument('-d', '--debug', help='Prints debug messages',
@@ -26,6 +28,7 @@ args = parser.parse_args()
 
 logging.basicConfig(stream=sys.stderr, level=(10 if args.debug else (20 if args.verbose else 30)))
 
+noclip = args.noclip
 scr_height = args.height
 scr_width = args.width
 logging.info('Got viewport dimensions from parse_args, %dx%d.' % (scr_width, scr_height))
@@ -118,26 +121,30 @@ while is_active:
         if keys[pygame.K_UP]:
             cam.move(movement_speed)
             can_move = True
-            for wall in map.walls:
-                for hitline in [[cl.Vector(round(cam.pos.x)-2, round(cam.pos.y)-2),
-                                 cl.Vector(round(cam.pos.x)-2, round(cam.pos.y)+2)],
-                                [cl.Vector(round(cam.pos.x)-2, round(cam.pos.y)+2),
-                                 cl.Vector(round(cam.pos.x)+2, round(cam.pos.y)+2)],
-                                [cl.Vector(round(cam.pos.x)+2, round(cam.pos.y)+2),
-                                 cl.Vector(round(cam.pos.x)+2, round(cam.pos.y)-2)],
-                                [cl.Vector(round(cam.pos.x)+2, round(cam.pos.y)-2),
-                                 cl.Vector(round(cam.pos.x)-2, round(cam.pos.y)-2)]]:
-                    h = hl.segintersect(hitline[0], hitline[1], wall.a, wall.b)
-                    if h:
-                        logging.debug("intersection:", h,
-                                      "\na1:", hitline[0].x, "x /", hitline[0].y,
-                                      "y, a2:", hitline[1].x, "x /", hitline[1].y,
-                                      "y\nb1:", wall.a.x, "x /", wall.a.y,
-                                      "y, b2:", wall.b.x, "x /", wall.b.y, "y")
-                        can_move = False
-                if not can_move:
-                    cam.move(-movement_speed)
-                    break
+            if not noclip:
+                for wall in map.walls:
+                    for hitline in [[cl.Vector(round(cam.pos.x)-2, round(cam.pos.y)-2),
+                                     cl.Vector(round(cam.pos.x)-2, round(cam.pos.y)+2)],
+                                    [cl.Vector(round(cam.pos.x)-2, round(cam.pos.y)+2),
+                                     cl.Vector(round(cam.pos.x)+2, round(cam.pos.y)+2)],
+                                    [cl.Vector(round(cam.pos.x)+2, round(cam.pos.y)+2),
+                                     cl.Vector(round(cam.pos.x)+2, round(cam.pos.y)-2)],
+                                    [cl.Vector(round(cam.pos.x)+2, round(cam.pos.y)-2),
+                                     cl.Vector(round(cam.pos.x)-2, round(cam.pos.y)-2)]]:
+                        if not wall.clip:
+                            continue
+                        h = hl.segintersect(hitline[0], hitline[1], wall.a, wall.b)
+                        if h:
+                            logging.debug("intersection:", h,
+                                          "\na1:", hitline[0].x, "x /", hitline[0].y,
+                                          "y, a2:", hitline[1].x, "x /", hitline[1].y,
+                                          "y\nb1:", wall.a.x, "x /", wall.a.y,
+                                          "y, b2:", wall.b.x, "x /", wall.b.y, "y")
+                            can_move = False
+                            break
+                    if not can_move:
+                        cam.move(-movement_speed)
+                        break
             if bounce == b_limit or bounce == b_limit * -1:
                 b_change *= -1
             bounce += b_change
