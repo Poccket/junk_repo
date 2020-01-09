@@ -1,3 +1,6 @@
+from shapely.geometry import LineString, Point
+
+
 def map(x: int, a: int, b: int, c: int, d: int):
     return (x - a) / (b - a) * (d - c) + c
 
@@ -10,23 +13,36 @@ def get_int(text: str):
             print("Not a number!")
 
 
-def intersect(a, b, c, d):
-    x1, y1 = a.x, a.y
-    x2, y2 = b.x, b.y
-    x3, y3 = c.x, c.y
-    x4, y4 = d.x, d.y
+def intersect(a, b, c, d) -> list:
+    """
+    Used for raycasting, assumes lines go infinitely
+    :param a:
+    :param b:
+    :param c:
+    :param d:
+    :return:
+    """
+    den = ((b.x - a.x) * (d.y - c.y)) - ((b.y - a.y) * (d.x - c.x))
 
-    den = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4)
+    num1 = ((a.y - c.y) * (d.x - c.x)) - ((a.x - c.x) * (d.y - c.y))
+    num2 = ((a.y - c.y) * (b.x - a.x)) - ((a.x - c.x) * (b.y - a.y))
     if not den:
-        return
+        return []
 
-    t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / den
-    u = -((x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)) / den
+    r = num1 / den
+    s = num2 / den
 
-    if 0 < t < 1 and u > 0:
-        pt = [0, 0]
-        pt[0] = x1 + t * (x2 - x1)
-        pt[1] = y1 + t * (y2 - y1)
-        return pt
+    if 0 < r < 1 and s > 0:
+        x = a.x + r * (b.x - a.x)
+        y = a.y + r * (b.y - a.y)
+        return [round(x, 2), round(y, 2)]
     else:
-        return
+        return []
+
+
+def segintersect(a1, a2, b1, b2):
+    line1 = LineString([(a1.x, a1.y), (a2.x, a2.y)])
+    line2 = LineString([(b1.x, b1.y), (b2.x, b2.y)])
+
+    int_pt = line1.intersection(line2)
+    return [int_pt.x, int_pt.y] if (type(int_pt) == Point) else []

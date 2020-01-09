@@ -117,6 +117,27 @@ while is_active:
             bounce += b_change
         if keys[pygame.K_UP]:
             cam.move(movement_speed)
+            can_move = True
+            for wall in map.walls:
+                for hitline in [[cl.Vector(round(cam.pos.x)-2, round(cam.pos.y)-2),
+                                 cl.Vector(round(cam.pos.x)-2, round(cam.pos.y)+2)],
+                                [cl.Vector(round(cam.pos.x)-2, round(cam.pos.y)+2),
+                                 cl.Vector(round(cam.pos.x)+2, round(cam.pos.y)+2)],
+                                [cl.Vector(round(cam.pos.x)+2, round(cam.pos.y)+2),
+                                 cl.Vector(round(cam.pos.x)+2, round(cam.pos.y)-2)],
+                                [cl.Vector(round(cam.pos.x)+2, round(cam.pos.y)-2),
+                                 cl.Vector(round(cam.pos.x)-2, round(cam.pos.y)-2)]]:
+                    h = hl.segintersect(hitline[0], hitline[1], wall.a, wall.b)
+                    if h:
+                        logging.debug("intersection:", h,
+                                      "\na1:", hitline[0].x, "x /", hitline[0].y,
+                                      "y, a2:", hitline[1].x, "x /", hitline[1].y,
+                                      "y\nb1:", wall.a.x, "x /", wall.a.y,
+                                      "y, b2:", wall.b.x, "x /", wall.b.y, "y")
+                        can_move = False
+                if not can_move:
+                    cam.move(-movement_speed)
+                    break
             if bounce == b_limit or bounce == b_limit * -1:
                 b_change *= -1
             bounce += b_change
@@ -154,7 +175,7 @@ while is_active:
         pygame.draw.rect(window, (col_r, col_g, col_b), to_draw)
 
     if show_map:
-        cam.draw(window, offset=scr_width)
+        # cam.draw(window, offset=scr_width)
         for wall in map.walls:
             wall.draw(window, offset=scr_width)
 
