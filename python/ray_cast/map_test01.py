@@ -7,10 +7,10 @@ spawn = cl.Vector(250, 250)
 
 walls = [
     # Map boundaries
-    cl.Boundary(cl.Vector(0, 0), cl.Vector(0, height)),
-    cl.Boundary(cl.Vector(0, height), cl.Vector(width, height), (200, 200, 200)),
-    cl.Boundary(cl.Vector(width, height), cl.Vector(width, 0)),
-    cl.Boundary(cl.Vector(width, 0), cl.Vector(0, 0), (200, 200, 200)),
+    cl.Boundary(cl.Vector(1, 1), cl.Vector(1, height)),
+    cl.Boundary(cl.Vector(1, height), cl.Vector(width, height), (200, 200, 200)),
+    cl.Boundary(cl.Vector(width, height), cl.Vector(width, 1)),
+    cl.Boundary(cl.Vector(width, 1), cl.Vector(1, 1), (200, 200, 200)),
 
     # Square in upper left
     cl.Boundary(cl.Vector(25, 25), cl.Vector(25, 75), (255, 0, 0)),
