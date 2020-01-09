@@ -17,7 +17,7 @@ parser.add_argument('-f', '--fov', help='Angle of field of view and initial rayc
 parser.add_argument('-r', '--res', help='Amount to multiply raycount by',
                     type=int, default=1)
 parser.add_argument('-m', '--map', help='Map file to import',
-                    type=str, default="map_test01")
+                    type=str, default="maps.map_test01")
 parser.add_argument('-v', '--verbose', help='Prints verbose messages',
                     action='store_true')
 parser.add_argument('-d', '--debug', help='Prints debug messages',
