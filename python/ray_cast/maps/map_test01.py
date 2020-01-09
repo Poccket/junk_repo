@@ -3,6 +3,12 @@ import classes as cl
 width = 800
 height = 800
 
+sky = (49, 186, 231)
+floor = (20, 184, 34)
+
+r_distance = 640000
+r_color = sky
+
 spawn = cl.Vector(250, 250)
 
 walls = [

@@ -184,8 +184,8 @@ while is_active:
     cam.pos.y = max(movement_speed, min(cam.pos.y, map.height - movement_speed))
 
     # Reset window
-    window.fill((0, 0, 0))
-    pygame.draw.rect(window, (50, 50, 50), (0, (scr_height / 2) - bounce, scr_width, scr_height))
+    window.fill(map.sky)
+    pygame.draw.rect(window, map.floor, (0, (scr_height / 2) - bounce, scr_width, scr_height))
     scene = cam.look(window, map.walls, show_map, offset=scr_width)
 
     # First Person View
@@ -193,9 +193,9 @@ while is_active:
         if item[0] > scr_height:
             item[0] = scr_height
         sq = item[0]**2
-        col_r = hl.map(sq, 0, 640000, item[1][0], 0)
-        col_g = hl.map(sq, 0, 640000, item[1][1], 0)
-        col_b = hl.map(sq, 0, 640000, item[1][2], 0)
+        col_r = hl.map(sq, 0, map.r_distance, item[1][0], map.r_color[0])
+        col_g = hl.map(sq, 0, map.r_distance, item[1][1], map.r_color[1])
+        col_b = hl.map(sq, 0, map.r_distance, item[1][2], map.r_color[2])
         h = tbuih / item[0]
         to_draw = pygame.Rect(0, 0, w + 1, h)
         to_draw.center = ((i * w), half - bounce)
@@ -207,7 +207,8 @@ while is_active:
         pygame.draw.rect(window, (col_r, col_g, col_b), to_draw)
 
     if show_map:
-        # cam.draw(window, offset=scr_width)
+        pygame.draw.rect(window, (0, 0, 0), (scr_width, 0, scr_height, mapview_width))
+        cam.draw(window, offset=scr_width)
         for wall in map.walls:
             wall.draw(window, offset=scr_width)
 
