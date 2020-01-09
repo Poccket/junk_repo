@@ -3,6 +3,8 @@ import classes as cl
 width = 800
 height = 800
 
+spawn = cl.Vector(250, 250)
+
 walls = [
     # Map boundaries
     cl.Boundary(cl.Vector(0, 0), cl.Vector(0, height)),

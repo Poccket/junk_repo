@@ -46,12 +46,11 @@ scene = []
 show_map = False
 is_active = True
 
-cam = cl.Particle(pos=cl.Vector(250, 250), fov=args.fov, res=args.res)
+cam = cl.Particle(pos=map.spawn, fov=args.fov, res=args.res)
 logging.debug('Initiated player camera.')
 
 w = scr_width / (cam.fov * cam.res)
 tbuih = scr_height * cam.fov
-wsq = map.width**2
 half = scr_height / 2
 bounce = 0
 b_change = 2
@@ -141,9 +140,9 @@ while is_active:
         if item[0] > scr_height:
             item[0] = scr_height
         sq = item[0]**2
-        col_r = hl.map(sq, 0, wsq, item[1][0], 0)
-        col_g = hl.map(sq, 0, wsq, item[1][1], 0)
-        col_b = hl.map(sq, 0, wsq, item[1][2], 0)
+        col_r = hl.map(sq, 0, 640000, item[1][0], 0)
+        col_g = hl.map(sq, 0, 640000, item[1][1], 0)
+        col_b = hl.map(sq, 0, 640000, item[1][2], 0)
         h = tbuih / item[0]
         to_draw = pygame.Rect(0, 0, w + 1, h)
         to_draw.center = ((i * w), half - bounce)
