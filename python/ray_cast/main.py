@@ -200,9 +200,9 @@ while is_active:
         to_draw = pygame.Rect(0, 0, w + 1, h)
         to_draw.center = ((i * w), half - bounce)
 
-        col_r = col_r if col_r > 0 else 0
-        col_g = col_g if col_g > 0 else 0
-        col_b = col_b if col_b > 0 else 0
+        col_r = min(255, max(round(col_r), 0))
+        col_g = min(255, max(round(col_g), 0))
+        col_b = min(255, max(round(col_b), 0))
 
         pygame.draw.rect(window, (col_r, col_g, col_b), to_draw)
 
