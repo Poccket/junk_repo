@@ -128,6 +128,7 @@ class Ray:
     """
     def __init__(self, pos: Vector, angle: float):
         self.pos = pos
+        self.angle = angle
         self.ang = Vector(cos(angle), sin(angle))
 
     def setangle(self, a: float):
@@ -138,6 +139,7 @@ class Ray:
         :type a: float
         :return: None
         """
+        self.angle = a
         self.ang = Vector(cos(a), sin(a))
         return
 
@@ -272,14 +274,15 @@ class Particle:
                 if pt:
                     d = self.pos.dist(Vector(pt[0], pt[1]))
                     if d < record[0]:
-                        record = [ceil(d), wall.col]
+                        record = [ceil(d * cos(ray.angle - self.heading)), wall.col]
+                        #record = [ceil(d), wall.col]
                         closest = pt
-            if closest and do_draw:
-                pg.draw.line(win, (255, 255, 255), [self.pos.x+offset, self.pos.y], [closest[0]+offset, closest[1]], 1)
             if record[0] < float("inf"):
                 scene.append(record)
             else:
                 scene.append([float("inf"), (0, 0, 0)])
+            # if closest and do_draw: # lazily disabled
+            #     pg.draw.line(win, (255, 255, 255), [self.pos.x+offset, self.pos.y], [closest[0]+offset, closest[1]], 1)
         return scene
 
     def draw(self, win, color=(255, 255, 255), stroke: float = 0, offset: float = 0):

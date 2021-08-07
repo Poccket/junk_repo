@@ -1,20 +1,22 @@
 import argparse
 import logging
 import sys
-import pygame
+import contextlib
+with contextlib.redirect_stdout(None):
+    import pygame # Ridiculous that I should have to do this.
 import importlib
 
 import classes as cl
 import helper as hl
 
 parser = argparse.ArgumentParser(description="Raycasting program.")
-parser.add_argument('--height', help='Height of first person viewport',
+parser.add_argument('--height', help='Height of first person viewport (Default: 800px)',
                     type=int, default=800)
-parser.add_argument('--width', help='Width of first person viewport',
+parser.add_argument('--width', help='Width of first person viewport (Default: 800px)',
                     type=int, default=800)
-parser.add_argument('-f', '--fov', help='Angle of field of view and initial raycount',
+parser.add_argument('-f', '--fov', help='Angle of field of view and initial raycount (Default: 60)',
                     type=int, default=60)
-parser.add_argument('-r', '--res', help='Amount to multiply raycount by',
+parser.add_argument('-r', '--res', help='Amount to multiply raycount by (Default: 1)',
                     type=int, default=1)
 parser.add_argument('-m', '--map', help='Map file to import',
                     type=str, default="maps.map_test01")
@@ -55,11 +57,13 @@ logging.debug('Initiated player camera.')
 w = scr_width / (cam.fov * cam.res)
 tbuih = scr_height * cam.fov
 half = scr_height / 2
+pitch = 0
 bounce = 0
 b_change = 2
 b_limit = 10
 movement_speed = 3
 moveb_mult = 0.66
+cam.rotate(-(3.145/2))
 
 paused = False
 while is_active:
@@ -68,7 +72,7 @@ while is_active:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 logging.info("Window closed, quitting.")
-                print("Goodbye!")
+                print("Bye-bye!")
                 is_active = False
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_y:
@@ -108,17 +112,24 @@ while is_active:
 
         # Movement
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT] or keys[pygame.K_a]:
+        if keys[pygame.K_DOWN]:
+            if pitch < 300:
+                pitch += 15
+        if keys[pygame.K_UP]:
+            if pitch > -300:
+                pitch -= 15
+        if keys[pygame.K_LEFT]:
             cam.rotate(-0.05)
             if bounce == b_limit or bounce == b_limit * -1:
                 b_change *= -1
             bounce += b_change
-        if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
+        if keys[pygame.K_RIGHT]:
             cam.rotate(0.05)
             if bounce == b_limit or bounce == b_limit * -1:
                 b_change *= -1
             bounce += b_change
-        if keys[pygame.K_UP] or keys[pygame.K_w]:
+        if keys[pygame.K_a]:
+            cam.rotate(-halfturn)
             cam.move(movement_speed)
             can_move = True
             if not noclip:
@@ -148,7 +159,70 @@ while is_active:
             if bounce == b_limit or bounce == b_limit * -1:
                 b_change *= -1
             bounce += b_change
-        if keys[pygame.K_DOWN] or keys[pygame.K_s]:
+            cam.rotate(halfturn)
+        if keys[pygame.K_d]:
+            cam.rotate(halfturn)
+            cam.move(movement_speed)
+            can_move = True
+            if not noclip:
+                for wall in map.walls:
+                    for hitline in [[cl.Vector(round(cam.pos.x)-2, round(cam.pos.y)-2),
+                                     cl.Vector(round(cam.pos.x)-2, round(cam.pos.y)+2)],
+                                    [cl.Vector(round(cam.pos.x)-2, round(cam.pos.y)+2),
+                                     cl.Vector(round(cam.pos.x)+2, round(cam.pos.y)+2)],
+                                    [cl.Vector(round(cam.pos.x)+2, round(cam.pos.y)+2),
+                                     cl.Vector(round(cam.pos.x)+2, round(cam.pos.y)-2)],
+                                    [cl.Vector(round(cam.pos.x)+2, round(cam.pos.y)-2),
+                                     cl.Vector(round(cam.pos.x)-2, round(cam.pos.y)-2)]]:
+                        if not wall.clip:
+                            continue
+                        h = hl.segintersect(hitline[0], hitline[1], wall.a, wall.b)
+                        if h:
+                            logging.debug("intersection:", h,
+                                          "\na1:", hitline[0].x, "x /", hitline[0].y,
+                                          "y, a2:", hitline[1].x, "x /", hitline[1].y,
+                                          "y\nb1:", wall.a.x, "x /", wall.a.y,
+                                          "y, b2:", wall.b.x, "x /", wall.b.y, "y")
+                            can_move = False
+                            break
+                    if not can_move:
+                        cam.move(-movement_speed)
+                        break
+            if bounce == b_limit or bounce == b_limit * -1:
+                b_change *= -1
+            bounce += b_change
+            cam.rotate(-halfturn)
+        if keys[pygame.K_w]:
+            cam.move(movement_speed)
+            can_move = True
+            if not noclip:
+                for wall in map.walls:
+                    for hitline in [[cl.Vector(round(cam.pos.x)-2, round(cam.pos.y)-2),
+                                     cl.Vector(round(cam.pos.x)-2, round(cam.pos.y)+2)],
+                                    [cl.Vector(round(cam.pos.x)-2, round(cam.pos.y)+2),
+                                     cl.Vector(round(cam.pos.x)+2, round(cam.pos.y)+2)],
+                                    [cl.Vector(round(cam.pos.x)+2, round(cam.pos.y)+2),
+                                     cl.Vector(round(cam.pos.x)+2, round(cam.pos.y)-2)],
+                                    [cl.Vector(round(cam.pos.x)+2, round(cam.pos.y)-2),
+                                     cl.Vector(round(cam.pos.x)-2, round(cam.pos.y)-2)]]:
+                        if not wall.clip:
+                            continue
+                        h = hl.segintersect(hitline[0], hitline[1], wall.a, wall.b)
+                        if h:
+                            logging.debug("intersection:", h,
+                                          "\na1:", hitline[0].x, "x /", hitline[0].y,
+                                          "y, a2:", hitline[1].x, "x /", hitline[1].y,
+                                          "y\nb1:", wall.a.x, "x /", wall.a.y,
+                                          "y, b2:", wall.b.x, "x /", wall.b.y, "y")
+                            can_move = False
+                            break
+                    if not can_move:
+                        cam.move(-movement_speed)
+                        break
+            if bounce == b_limit or bounce == b_limit * -1:
+                b_change *= -1
+            bounce += b_change
+        if keys[pygame.K_s]:
             cam.move(-movement_speed * moveb_mult)
             can_move = True
             if not noclip:
@@ -178,6 +252,7 @@ while is_active:
             if bounce == b_limit or bounce == b_limit * -1:
                 b_change *= -1
             bounce += b_change
+    viewpitch = pitch + bounce
 
     # Move back into boundaries if left them
     cam.pos.x = max(movement_speed, min(cam.pos.x, map.width - movement_speed))
@@ -185,7 +260,7 @@ while is_active:
 
     # Reset window
     window.fill(map.sky)
-    pygame.draw.rect(window, map.floor, (0, (scr_height / 2) - bounce, scr_width, scr_height))
+    pygame.draw.rect(window, map.floor, (0, (scr_height / 2) - viewpitch, scr_width, scr_height))
     scene = cam.look(window, map.walls, show_map, offset=scr_width)
 
     # First Person View
@@ -198,7 +273,7 @@ while is_active:
         col_b = hl.map(sq, 0, map.r_distance, item[1][2], map.r_color[2])
         h = tbuih / item[0]
         to_draw = pygame.Rect(0, 0, w + 1, h)
-        to_draw.center = ((i * w), half - bounce)
+        to_draw.center = ((i * w), half - viewpitch)
 
         col_r = min(255, max(round(col_r), 0))
         col_g = min(255, max(round(col_g), 0))
